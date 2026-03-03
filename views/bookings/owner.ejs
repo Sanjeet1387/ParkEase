@@ -1,0 +1,16 @@
+<% layout("layouts/boilerplate") %>
+
+<h3>Bookings on My Parking Spots</h3>
+
+<% if (ownerBookings.length === 0) { %>
+  <p>No bookings yet.</p>
+<% } %>
+
+<% for (let booking of ownerBookings) { %>
+  <div class="card mb-3 p-3">
+    <h5><%= booking.parkingspot.title %></h5>
+    <p>Booked by: <%= booking.user.username %></p>
+    <p>Date: <%= booking.date %></p>
+    <p>Status: <%= booking.bookingStatus %></p>
+  </div>
+<% } %>

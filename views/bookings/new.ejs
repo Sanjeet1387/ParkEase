@@ -1,0 +1,38 @@
+<% layout("layouts/boilerplate") %>
+
+<h3>Book Parking Spot</h3>
+
+<div class="card p-3">
+  <h5><%= parkingspot.title %></h5>
+  <p>₹<%= parkingspot.price %> / hour</p>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label>Date</label>
+      <input type="date" name="date" required class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>Start Time</label>
+      <input type="time" name="startTime" required class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>End Time</label>
+      <input type="time" name="endTime" required class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label>Payment Method</label>
+      <select name="paymentMethod" class="form-control" required>
+        <option value="upi">UPI</option>
+        <option value="card">Card</option>
+        <option value="cash">Cash</option>
+      </select>
+    </div>
+
+    <button class="btn btn-dark w-100">
+      Pay & Confirm
+    </button>
+  </form>
+</div>

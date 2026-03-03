@@ -1,0 +1,37 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="text-center mt-5">
+  <h2>✅ Booking Confirmed</h2>
+
+  <p>
+    <strong>Parking Spot:</strong> <%= booking.parkingspot.title %>
+  </p>
+
+  <p>
+    <strong>Date:</strong> <%= booking.date %>
+  </p>
+
+  <p>
+    <strong>Hours:</strong> <%= booking.hours %>
+  </p>
+
+  <p>
+    <strong>From:</strong> <%= booking.startTime %>&nbsp;<strong>To:</strong> <%= booking.endTime %>
+  </p>
+
+  <p>
+    <strong>Total Paid:</strong> ₹<%= booking.totalPrice %>
+  </p>
+
+  <p>
+    <strong>Payment Method:</strong> <%= booking.paymentMethod.toUpperCase() %>
+  </p>
+
+  <h4>Parking Pass</h4>
+  <img src="<%= booking.qrCode %>" width="200" alt="QR Code">
+  <p>Show this QR code at the parking entrance</p>
+
+  <a href="/parkingspots" class="btn btn-dark mt-3">
+    Back to Parking Spots
+  </a>
+</div>

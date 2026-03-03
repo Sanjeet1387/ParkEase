@@ -1,0 +1,172 @@
+<% layout("layouts/boilerplate") %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>All Parking Spots</h3>
+
+  <button class="btn btn-outline-dark filter-toggle-btn" id="openFilterBtn">
+    <i class="fa-solid fa-filter"></i>
+    <span class="filter-text">Filters</span>
+  </button>
+</div>
+
+<!-- FILTER DRAWER -->
+<div id="filterDrawer" class="filter-drawer">
+  <div class="filter-header">
+    <h5>Filters</h5>
+    <button class="btn-close" id="closeFilterBtn"></button>
+  </div>
+
+  <form method="GET" action="/parkingspots" class="filter-form row g-2 mb-3">
+    <!-- 🔁 PUT YOUR EXISTING FILTER CONTENT HERE (UNCHANGED) -->
+
+    <div id="filters">
+
+      <div class="filter">
+        <select name="state" class="col form-control">
+            <option value="">State</option>
+            <option value="Bihar" <%= filters?.state === "Bihar" ? "selected" : "" %>>Bihar</option>
+            <option value="Uttar Pradesh" <%= filters?.state === "Uttar Pradesh" ? "selected" : "" %>>Uttar Pradesh</option>
+            <option value="Maharashtra" <%= filters?.state === "Maharashtra" ? "selected" : "" %>>Maharashtra</option>
+            <option value="Delhi" <%= filters?.state === "Delhi" ? "selected" : "" %>>Delhi</option>
+            <option value="Rajsthan" <%= filters?.state === "Rajsthan" ? "selected" : "" %>>Rajsthan</option>
+            <option value="Punjab" <%= filters?.state === "Punjab" ? "selected" : "" %>>Punjab</option>
+            <option value="Karnatka" <%= filters?.state === "Karnatka" ? "selected" : "" %>>Karnatka</option>
+        </select>
+        </div>
+
+        <div class="filter">
+        <select name="city" class="col form-control">
+            <option value="">City</option>
+            <option value="Delhi" <%= filters?.city === "Delhi" ? "selected" : "" %>>Delhi</option>
+            <option value="Mumbai" <%= filters?.city === "Mumbai" ? "selected" : "" %>>Mumbai</option>
+            <option value="Patna" <%= filters?.city === "Patna" ? "selected" : "" %>>Patna</option>
+            <option value="Gaya" <%= filters?.city === "Gaya" ? "selected" : "" %>>Gaya</option>
+            <option value="Kolkata" <%= filters?.city === "Kolkata" ? "selected" : "" %>>Kolkata</option>
+            <option value="Luckhnow" <%= filters?.city === "Luckhnow" ? "selected" : "" %>>Luckhnow</option>
+            <option value="Hydrabad" <%= filters?.city === "Hydrabad" ? "selected" : "" %>>Hydrabad</option>
+        </select>
+        </div>
+
+        <div class="filter">
+        <select name="type" class="col form-control">
+            <option value="">Parking Type</option>
+            <option value="covered" <%= filters?.type === "Covered" ? "selected" : "" %>>Covered</option>
+            <option value="open" <%= filters?.type === "Open" ? "selected" : "" %>>Open</option>
+          </select>
+        </div>
+
+        <div class="filter">
+          <select name="vehicleType" class="col form-control">
+            <option value="">Vehicle</option>
+            <option value="bike" <%= filters?.vehicleType === "Bike" ? "selected" : "" %>>Bike</option>
+            <option value="car" <%= filters?.vehicleType === "Car" ? "selected" : "" %>>Car</option>
+            <option value="truck" <%= filters?.vehicleType === "Truck" ? "selected" : "" %>>Truck</option>
+            <option value="others" <%= filters?.vehicleType === "Others" ? "selected" : "" %>>Others</option>
+          </select>
+        </div>
+
+        <div class="filter">
+          <input
+            type="number"
+            name="minPrice"
+            placeholder="Min ₹"
+            class="col form-control"
+            value="<%= filters?.minPrice || '' %>"
+          >
+        </div>
+        <div class="filter">
+          <input
+            type="number"
+            name="maxPrice"
+            placeholder="Max ₹"
+            class="col form-control"
+            value="<%= filters?.maxPrice || '' %>"
+          >
+        </div>
+        <div class="filter">
+          <input
+            type="checkbox"
+            name="is24x7"
+            value="true"
+            <%= filters?.is24x7 ? "checked" : "" %>
+          >
+          24x7 Only
+        </div>
+        <div class="filter">
+          <input
+            type="checkbox"
+            id="nearMe"
+            name="nearMe"
+            <%= filters?.lat && filters?.lng ? "checked" : "" %>
+          >
+          <label for="nearMe">Near me</label>
+
+          <!-- Hidden inputs to store coordinates -->
+          <input type="hidden" name="lat" id="lat" value="<%= filters?.lat || '' %>">
+          <input type="hidden" name="lng" id="lng" value="<%= filters?.lng || '' %>">
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-dark w-100">Apply Filters</button>
+          <a href="/parkingspots" class="btn btn-outline-secondary w-100">
+            Clear
+          </a>
+        </div>
+  </div>
+  </form>
+</div>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% for(let spot of allparkingspots){ %>
+        <a href="/parkingspots/<%= spot._id %>" class="parkingspot-link">
+            <div class="card parking-card">
+                <img 
+                    src="<%= spot.image.url %>" 
+                    class="card-img-top" 
+                    alt="img"
+                    style="height: 21rem;"
+                >
+                <div class="card-body">
+                    <h3 class="card-title"><%= spot.title %></h3>
+                    <p class="card-text">
+                        <%= spot.location.address %>, 
+                        <%= spot.location.city %>
+                    </p>
+                    <p class="card-text price"><span>&#8377</span><%= spot.price %>/hr</p>
+
+                    <% if (currUser && !spot.owner.equals(currUser._id)) { %>
+                      <p class="btn btn-dark w-100 mt-2">
+                        Book Now
+                      </p>
+                    <% } %>
+                </div>
+            </div>
+        </a>
+    <% } %>
+</div>
+
+
+<!-- for near me functionality -->
+<script>
+  const nearMeCheckbox = document.getElementById("nearMe");
+
+  nearMeCheckbox?.addEventListener("change", function () {
+    if (this.checked) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            document.getElementById("lat").value =
+              position.coords.latitude;
+            document.getElementById("lng").value =
+              position.coords.longitude;
+          },
+          () => {
+            alert("Location permission is required for Near Me filter");
+            nearMeCheckbox.checked = false;
+          }
+        );
+      } else {
+        alert("Geolocation not supported");
+      }
+    }
+  });
+</script>

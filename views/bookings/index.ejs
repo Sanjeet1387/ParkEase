@@ -1,0 +1,50 @@
+<% layout("layouts/boilerplate") %>
+
+<h3>My Bookings</h3>
+
+<% if (bookings.length === 0) { %>
+  <p>No bookings yet.</p>
+<% } %>
+
+<% for (let booking of bookings) { %>
+  <div class="card mb-3 p-3">
+    <div class="booking">
+        <h5><%= booking.parkingspot.title %></h5>
+        <% if (booking.bookingStatus === "confirmed") { %>
+        <form method="POST" action="/bookings/<%= booking._id %>/cancel">
+            <button class="btn btn-outline-danger btn-sm mt-2">
+            Cancel Booking
+            </button>
+        </form>
+        <% } %>
+    </div>
+    <p>Date: <%= booking.date %></p>
+    <p>Hours: <%= booking.hours %></p>
+    <p>
+     <strong>From:</strong> <%= booking.startTime %>&nbsp;<strong>To:</strong> <%= booking.endTime %>
+    </p>
+    <p>Total: ₹<%= booking.totalPrice %></p>
+    
+    <%
+      // Build booking end datetime
+      const bookingDate = new Date(booking.date);
+      const [endHour, endMinute] = booking.endTime.split(":");
+      bookingDate.setHours(endHour, endMinute, 0, 0);
+
+      const now = new Date();
+      const isActive = now < bookingDate;
+    %>
+
+    <% if (booking.bookingStatus === "confirmed" && isActive) { %>
+      <h4>Parking Pass</h4>
+      <img src="<%= booking.qrCode %>" width="200" alt="QR Code">
+      <p>Show this QR code at the parking entrance</p>
+    <% } else { %>
+      <p class="text-danger">
+        Booking expired or Cancelled. QR code is no longer valid.
+      </p>
+    <% } %>
+    <p>Status: <%= booking.bookingStatus %></p>
+  </div>
+<% } %>
+

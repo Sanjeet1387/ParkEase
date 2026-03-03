@@ -1,0 +1,131 @@
+<% layout("layouts/boilerplate") %>
+<script>
+    window.apikey = "<%= process.env.MAPTILER_API_KEY %>"; 
+    const parkingspot = <%- JSON.stringify(parkingspot) %>;
+</script>
+<div class="cols-8 offset-2 mt-3">
+  <h2><%= parkingspot.title %></h2>
+  <img src="<%= parkingspot.image.url %>" alt="img" height="450" width="550">
+  <div class="card-body">
+   <p class="card-text">Owned by: &nbsp;<%= parkingspot.owner.username %></p>
+   <p class="card-text"><b><%= parkingspot.description %></b></p>
+   <p class="card-text"><%= parkingspot.location.address %> ,&nbsp; <%= parkingspot.location.city %></p>
+   <p class="card-text"><%= parkingspot.location.state %>&nbsp;&nbsp;<%= parkingspot.location.country %></p>
+   <p class="card-text"><span>&#8377</span><%= parkingspot.price.toLocaleString()%>/hr</p>
+   <% if (currUser && !parkingspot.owner.equals(currUser._id)) { %>
+      <a 
+        href="/parkingspots/<%= parkingspot._id %>/book" 
+        class="btn btn-dark mt-3">
+        Book Now
+      </a>
+    <% } %>
+  </div>
+  <br/>
+  <% if(currUser && currUser._id.equals(parkingspot.owner._id)){ %>
+    <div class="btns">
+      <form 
+        method="get" action="/parkingspots/<%= parkingspot._id %>/edit">
+        <button class="btn dark-btn edit-btn">Edit</button>
+      </form>
+      <form 
+        method="post" action="/parkingspots/<%= parkingspot._id %>?_method=Delete">
+        <button class="btn dark-btn delete-btn">Delete</button>
+      </form>
+    </div>
+  <% } %>
+</div>
+<div class="cols-8 offset-2 mt-3 mb-3">
+  <% if(currUser && !parkingspot.owner.equals(currUser._id)){ %>
+  <hr>
+  <h3>Leave a Review</h3>
+  <form method="post" action="/parkingspots/<%= parkingspot.id %>/reviews" class="needs-validation" novalidate>
+    <div class="mb-2 mt-3">
+      <label for="rating" class="form-label">Rating</label>
+      <fieldset class="starability-slot">
+      <input 
+          type="radio" 
+          id="no-rate" 
+          class="input-no-rate" 
+          name="review[rating]"  
+          value="1" 
+          checked 
+          aria-label="No rating." 
+      />
+      <input
+          type="radio" 
+          id="first-rate1"
+          name="review[rating]" 
+          value="1" 
+        />
+      <label for="first-rate1" title="Terrible">1 star</label>
+      <input 
+          type="radio" 
+          id="first-rate2" 
+          name="review[rating]" 
+          value="2" 
+      />
+      <label for="first-rate2" title="Not good">2 stars</label>
+      <input 
+          type="radio" 
+          id="first-rate3" 
+          name="review[rating]" 
+          value="3" 
+      />
+      <label for="first-rate3" title="Average">3 stars</label>
+      <input 
+          type="radio" 
+          id="first-rate4" 
+          name="review[rating]" 
+          value="4" 
+      />
+      <label for="first-rate4" title="Very good">4 stars</label>
+      <input 
+          type="radio" 
+          id="first-rate5" 
+          name="review[rating]" 
+          value="5" 
+      />
+      <label for="first-rate5" title="Amazing">5 stars</label>
+      </fieldset>
+    </div>
+
+    <div class="mb-3">
+      <label for="comment" class="form-label">Comments</label>
+      <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+      <div class="invalid-feedback">Please add some comments for review</div>
+    </div>
+    <button class="btn btn-outline-dark">Submit</button>
+  </form>
+  <% } %>
+</div>
+<div class="cols-8 offset-2 mt-3 mb-3">
+  <% if(parkingspot.reviews.length > 0){ %>
+    <hr>
+    <div  class="row">
+      <h3><b>All reviews</b></h3>
+      <% for(let review of parkingspot.reviews){ %>
+        <div class="card col-5 ms-3 mb-2 mt-3">
+          <div class="card-body">
+              <p class="card-title">@<%= review.author.username %></p>
+              <p class="card-text starability-result"
+                data-rating="<%= review.rating %>">
+              </p>
+              <p class="card-text"><%= review.comment %></p>
+          </div>
+          <% if(currUser && review.author.equals(currUser._id)){ %>
+          <form class="mb-3" method="POST" action="/parkingspots/<%= parkingspot._id %>/reviews/<%= review._id %>?_method=DELETE">
+            <button class="btn btn-sm btn-dark">Delete</button>
+          </form>
+        <% } %>
+        </div>
+      <%}%>
+    </div>
+  <% } %>
+  <div class="col-8 offset-3 mb-3">
+      <h3>where you'll be</h3>
+      <div id="map"></div>
+  </div>
+</div>
+
+<script src="/js/map.js"></script>
+

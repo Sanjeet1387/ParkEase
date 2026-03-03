@@ -1,0 +1,134 @@
+<% layout("layouts/boilerplate") %>
+<div class="cols-8 offset-2 mt-3">
+    <h2>Add a new ParkingSpot</h2>
+    <form method="post" action="/parkingspots" class="needs-validation" novalidate enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title: </label>
+            <input 
+                type="text" 
+                name="parkingspot[title]" 
+                placeholder="enter title"
+                id="title"
+                class="form-control"
+                required
+            >
+            <div class="valid-feedback">
+            Looks good!
+            </div>
+            <div class="invalid-feedback">
+            Please enter a valid title
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label><br/>
+            <textarea
+                rows="4"
+                cols="30"
+                name="parkingspot[description]" 
+                id="description"
+                class="form-control"
+                required
+            >
+            </textarea>
+            <div class="invalid-feedback">
+            add description!
+            </div>
+        </div>
+        <div class="mb-3">
+                <label for="image" class="form-label">Upload Image:</label>
+                <input type="file" 
+                name="parkingspot[image]" 
+                placeholder="upload image"
+                id="image"
+                class="form-control"
+                >
+            </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address:</label><br/>
+            <textarea
+                rows="3"
+                cols="20"
+                name="parkingspot[location][address]" 
+                id="Patna,Bihar"
+                class="form-control"
+                required
+            > 
+            </textarea>
+            <div class="invalid-feedback">
+            please fill address
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="city" class="form-label">City: </label>
+            <input 
+                type="text" 
+                name="parkingspot[location][city]" 
+                placeholder="Patna"
+                id="city"
+                class="form-control"
+                required
+            >
+            <div class="invalid-feedback">city required</div>
+        </div>
+        <div class="mb-3">
+            <label for="state" class="form-label">State: </label>
+            <input 
+                type="text" 
+                name="parkingspot[location][state]" 
+                placeholder="Bihar"
+                id="state"
+                class="form-control"
+                required
+            >
+            <div class="invalid-feedback">state required</div>
+        </div>
+        <div class="mb-3">
+            <label for="country" class="form-label">Country: </label>
+            <input 
+                type="text" 
+                name="parkingspot[location][country]" 
+                placeholder="India"
+                id="country"
+                class="form-control"
+                required
+            >
+            <div class="invalid-feedback">required country name</div>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price: </label>
+            <input 
+                type="number" 
+                name="parkingspot[price]" 
+                placeholder="500"
+                id="price"
+                class="form-control"
+                required
+            >
+            <div class="invalid-feedback">please enter valid price!</div>
+        </div>
+        <div class="mb-3">
+            <label>Parking Type</label>
+            <select name="parkingspot[type]" class="form-control">
+            <option value="open">Open</option>
+            <option value="covered">Covered</option>
+            <option value="basement">Basement</option>
+            <option value="street">Street</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Vehicle Type</label><br/>
+            <input type="checkbox" name="parkingspot[vehicleType][]" value="bike"> Bike
+            <input type="checkbox" name="parkingspot[vehicleType][]" value="car"> Car
+            <input type="checkbox" name="parkingspot[vehicleType][]" value="suv"> Truck
+            <input type="checkbox" name="parkingspot[vehicleType][]" value="suv"> Others
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="parkingSpot[isOpen24x7]" id="open247">
+            <label class="form-check-label" for="open247">
+                Open 24x7
+            </label>
+        </div>
+        <br/>
+        <button class="btn dark-btn add-btn mb-3">Add</button>
+    </form>
+</div>

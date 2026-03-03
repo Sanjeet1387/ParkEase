@@ -27,7 +27,8 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
-const Mongo_Url = 'mongodb://127.0.0.1:27017/ParkEase';
+// const Mongo_Url = 'mongodb://127.0.0.1:27017/ParkEase';
+const Mongo_Url = process.env.MONGO_URI
 
 main()
 .then((res) => {

@@ -12,6 +12,7 @@ const ExpressError = require("./utils/expressError");
 const parkingspotsRouter = require("./routes/parkingspot");
 const reviewsRouter = require("./routes/review");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -27,7 +28,8 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
-const Mongo_Url = 'mongodb://127.0.0.1:27017/ParkEase';
+// const Mongo_Url = 'mongodb://127.0.0.1:27017/ParkEase';
+const dbUrl = process.env.ATLASDB_URL;
 
 main()
 .then((res) => {
@@ -38,12 +40,29 @@ main()
 });
 
 async function main() {
-    await mongoose.connect(Mongo_Url);
+    await mongoose.connect(dbUrl);
 }
+
+//connect-mongo -> create and defined session store
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+
+    //advanced options
+    crypto: {
+        secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600, // always in second ( here 24hrs ka le rahe hai)
+});
+
+//for finding error in MongoStore
+store.on("error", () => {
+    console.log("ERROR IN MONGO SESSION STORE", err);
+});
+
 
 //express-session setup for use
 const sessionOptions = {
-    secret: "mysecretsupercode",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {

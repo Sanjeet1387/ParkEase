@@ -1,5 +1,6 @@
 # ParkEase
 ParkEase - Smart Parking Management System
+
 ParkEase is a full-stack web application that allows users to discover, book, and manage parking spots in real time. The platform provides location-based parking discovery, time-slot bookings, secure reservations, QR-based parking passes, and a smooth user experience across devices.
 
 🌟 Features
